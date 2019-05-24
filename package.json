@@ -1,0 +1,27 @@
+{
+  "name": "@muzeke.npm/sprestjs",
+  "version": "1.0.0",
+  "description": "SharePoint Online REST Web Services Library",
+  "main": "index.js",
+  "keywords": [
+    "SharePoint Online",
+    "SPO REST Web Services Library",
+    "jQuery SPO Rest Library"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muzeke/spRestJs.git"
+  },
+  "author": "Zeke Sebulino",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/muzeke/spRestJs/issues"
+  },
+  "homepage": "https://github.com/muzeke/spRestJs#readme",
+  "dependencies": {
+    "jquery": "^3.4.1"
+  }
+}

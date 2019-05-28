@@ -95,7 +95,6 @@ var $ = require("jquery");
       //list app to be returned
       var _listapp = {};
       /**
-       * Create/Insert a new item into SP List/Library
        *
        * @example
        * Rest.list('MyTestList').lmfn();
@@ -114,17 +113,19 @@ var $ = require("jquery");
         };
         return $.ajax(ajaxRequest);
       };
+
       /**
-       * Create/Insert a new item into SP List/Library
+       * Get Items From Library
        *
        * @example
-       * Rest.list('MyTestList').lmfn();
+       * Rest.list('MyTestList').getItems();
        * @param  {object} options    - object of options [columns, filter]
        *
        * @example - without arguments
        *  Rest.list('MyTestList').getItems();
        *
        * @example - with select columns options
+       *  Rest.list('MyTestList').getItems({ columns: [], filter: "", expands:[]});
        *
        * @return {Promise} - Return `Promise` containing the data results
        */
@@ -163,6 +164,23 @@ var $ = require("jquery");
         addMethodsToAjax(ajaxCall);
         return ajaxCall;
       };
+
+      /**
+       * Recursive Get Items From Library
+       * Use if SP List / Library exceeds 5000
+       * @example
+       * Rest.list('MyTestList').recursiveGetItems();
+       * @param  {object} options    - object of options [columns, filter]
+       *
+       * @example - without arguments
+       *  Rest.list('MyTestList').recursiveGetItems();
+       *
+       * @example - with select columns options
+       *  Rest.list('MyTestList').recursiveGetItems({ columns: [], filter: "", expands:[]});
+       *
+       * @return {Promise} - Return `array` containing all of the data results
+       */
+
       _listapp.recursiveGetItems = function(options, response) {
         options = options || {};
         var ajaxRequest = new AjaxHeadersSettings(
@@ -208,6 +226,18 @@ var $ = require("jquery");
           );
         });
       };
+
+      /**
+       * Create Item
+       *
+       * @example
+       * Rest.list('MyTestList').create( data );
+       *
+       * @example - without arguments
+       *  Rest.list('MyTestList').create();
+       *
+       * @return {Promise} - Return `Promise`
+       */
       _listapp.create = function(data) {
         if (!data) {
           console.error("Please fill out data to insert");
@@ -235,6 +265,19 @@ var $ = require("jquery");
         ajaxRequest.data = JSON.stringify(data);
         return $.ajax(ajaxRequest);
       };
+
+      /**
+       * Update Item
+       *
+       * @example
+       * Rest.list('MyTestList').update( data );
+       *
+       * @example - without arguments
+       *  Rest.list('MyTestList').update();
+       *
+       * @return {Promise} - Return `Promise`
+       */
+
       _listapp.update = function(data) {
         if (!data) {
           console.error("Please fill out data to insert");
@@ -272,6 +315,19 @@ var $ = require("jquery");
         ajaxRequest.data = JSON.stringify(data);
         return $.ajax(ajaxRequest);
       };
+
+      /**
+       * Delete Item
+       *
+       * @example
+       * Rest.list('MyTestList').delete( id );
+       *
+       * @example - without arguments
+       *  Rest.list('MyTestList').delete();
+       *
+       * @return {Promise} - Return `Promise`
+       */
+
       _listapp.delete = function(id) {
         var ajaxRequest = new AjaxHeadersSettings(
           "DELETE",
@@ -283,6 +339,15 @@ var $ = require("jquery");
         );
         return $.ajax(ajaxRequest);
       };
+
+      /**
+       * Get Field Name Props
+       *
+       * @example
+       * Rest.list('MyTestList').field( fieldName );
+       *
+       * @return {Promise} - Return `Promise`
+       */
       _listapp.field = function(fieldName) {
         var temp = {};
         temp.getOptions = function() {
@@ -300,16 +365,17 @@ var $ = require("jquery");
       };
       return _listapp;
     }; //list methods end
+
     app.user = function(loginName) {
       //list app to be returned
       var _userapp = {};
       /**
-       * Create/Insert a new item into SP List/Library
+       * Ensure user to the sharepoint online
        *
        * @example
-       * Rest.list('MyTestList').lmfn();
+       * Rest.user('loginname').ensureUser();
        *
-       * @return {Promise} - Return `Promise` containing the list metadata name
+       * @return {Promise} - Return `Promise`
        */
       _userapp.ensureUser = function() {
         var ajaxRequest = new AjaxHeadersSettings(
@@ -323,16 +389,18 @@ var $ = require("jquery");
       };
       return _userapp;
     }; //user methods end
+
     app.group = function(groupname) {
       //list app to be returned
       var _groupapp = {};
+
       /**
-       * Create/Insert a new item into SP List/Library
+       * Get users from a group in SP
        *
        * @example
-       * Rest.list('MyTestList').lmfn();
+       * Rest.user('groupname').getUsers();
        *
-       * @return {Promise} - Return `Promise` containing the list metadata name
+       * @return {Promise} - Return `Promise`
        */
       _groupapp.getUsers = function() {
         var ajaxRequest = new AjaxHeadersSettings(
@@ -345,6 +413,15 @@ var $ = require("jquery");
         addMethodsToAjax(ajaxCall);
         return ajaxCall;
       };
+
+      /**
+       * Add users to a group in SP
+       *
+       * @example
+       * Rest.user('groupname').addUser(metadata);
+       *
+       * @return {Promise} - Return `Promise`
+       */
       _groupapp.addUser = function(metadata) {
         metadata = metadata || {};
         var ajaxRequest = new AjaxHeadersSettings(
@@ -356,6 +433,15 @@ var $ = require("jquery");
         addMethodsToAjax(ajaxCall);
         return ajaxCall;
       };
+
+      /**
+       * Remove userfrom a group in SP
+       *
+       * @example
+       * Rest.user('groupname').removeUser(metadata);
+       *
+       * @return {Promise} - Return `Promise`
+       */
       _groupapp.removeUser = function(metadata) {
         metadata = metadata || {};
         var ajaxRequest = new AjaxHeadersSettings(
@@ -369,11 +455,19 @@ var $ = require("jquery");
         addMethodsToAjax(ajaxCall);
         return ajaxCall;
       };
+
       return _groupapp;
     }; //user methods end
+
     app.AjaxHeadersSettings = AjaxHeadersSettings;
     return app;
   })();
+
+  /**
+   * Module for File Uploading
+   *
+   * @return {Promise} - Return `Promise`
+   */
   var FileUploadModule = (function(rest) {
     /**
      * Just getting the file buffer
